@@ -1,0 +1,4 @@
+pillow
+qrcode
+qrcode_terminal
+tuyalinksdk
