@@ -13,7 +13,7 @@ app.use(express.json());
 
 const HTTPserver = http.createServer(app);
 
-const MQTTPort = 8883
+const MQTTPort = process.env.MQTT_PORT || 1884
 
 const aedes = Aedes();
 
