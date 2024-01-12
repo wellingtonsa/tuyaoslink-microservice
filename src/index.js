@@ -1,19 +1,11 @@
 require('dotenv').config()
-const http = require('http');
-const express =  require('express');
-const cors = require('cors');
-const app = express();
 const Aedes = require('aedes');
 const { createServer } = require('net')
 const { spawn } = require('child_process');
 
 
-app.use(cors());
-app.use(express.json());
 
-const HTTPserver = http.createServer(app);
-
-const MQTTPort = process.env.MQTT_PORT || 1884
+const MQTTPort = process.env.PORT || 1884
 
 const aedes = Aedes();
 
@@ -66,8 +58,7 @@ function  startBroker () {
   aedes.on('publish', async function (packet, client) {
    // console.log('Client \x1b[31m' + (client ? client.id : 'BROKER_' + aedes.id) + '\x1b[0m has published', packet.payload.toString(), 'on', packet.topic, 'to broker', aedes.id)
    if(packet.topic.endsWith('get')){
-    let deviceId = packet.topic.split('/')[1];
-    process.stdout.write(`${deviceId}|sender:`+packet.payload.toString());
+    process.stdout.write(`${client.id}|sender:`+packet.payload.toString());
    }
   })
 }
@@ -102,17 +93,7 @@ function main() {
       console.log(data);
   });
 
-  app.get('/health', (req, res) => {
-    res.json({ ok: true });
-  })
-  
-  const port = process.env.PORT || 9000;
-  
-  HTTPserver.listen(port, () => { 
-    console.log(`Server is up and running on Port ${port}`);
-
-    startBroker();
-  });
+  startBroker();
 }
 
 
